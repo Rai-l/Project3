@@ -1,5 +1,5 @@
 import pygame
-from utility.file_manager import FileManager
+from .utility.file_manager import FileManager
 
 class VBox:
     def __init__(self, xpos, ypos, height, width, xalign=True, yalign=True):
@@ -10,7 +10,7 @@ class VBox:
         self.width = width
         self.xpos = xpos
         self.ypos = ypos
-        self.spacing = self.data["padding"]["spacing"]
+        self.spacing = self.data["padding"]["xspacing"]
         self.xalign = self.data["padding"]["xalign"] if xalign else 0
         self.yalign = self.data["padding"]["yalign"] if yalign else 0
         self.rect = pygame.Rect(xpos, ypos, self.width, self.height)
@@ -20,10 +20,13 @@ class VBox:
         pass
 
     def draw(self):
-        xpos=self.xpos+(self.xalign*self.xpos)
-        self.items[0].setPos(xpos, self.ypos)
-        for i in range(1,self.items.count()):
-            self.items[i].setPos(xpos,self.ypos)
+        ypos = self.ypos + (self.yalign * self.ypos)
+        xpos = self.xpos + (self.xalign * self.xpos)
+        self.items[0].setPos(xpos, ypos)
+        self.items[0].draw()
+        ypos += self.spacing
+        for i in range(1,len(self.items)):
+            self.items[i].setPos(xpos, ypos)
             self.items[i].draw()
-            xpos+=self.spacing
+            ypos += self.spacing
         pass

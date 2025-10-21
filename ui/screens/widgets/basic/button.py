@@ -1,6 +1,6 @@
 import pygame
-from utility.file_manager import FileManager
-from text import Text
+from .utility.file_manager import FileManager
+from .text import Text
 
 
 class Button:
@@ -17,14 +17,16 @@ class Button:
         self.text = Text(screen, text)
 
     def draw(self):
-        centerCoord = self.text.get_rect(center=self.rect.center)
+        centerCoord = self.text.renderText.get_rect(center=self.rect.center)
         self.text.setPos(centerCoord[0], centerCoord[1])
-        self.text.drawText()
         pygame.draw.rect(self.screen, self.color, self.rect)
+        self.text.draw()
 
     def setPos(self, xpos, ypos):
         self.xpos = xpos
         self.ypos = ypos
+        self.rect = pygame.Rect(xpos, ypos, self.width, self.height)
+
 
     def button_clicked(self, xpos, ypos):
         if self.rect.collidepoint(xpos, ypos):

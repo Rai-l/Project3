@@ -6,8 +6,8 @@
   },
   "text": {
     "size":{
-      "heading": 100,
-      "normal": 90},
+      "heading": 20,
+      "normal": 17},
     "font": {
       "heading": "arial",
       "normal": "arial"
@@ -15,12 +15,12 @@
   },
   "ui_size": {
     "window": {
-      "width": 600,
-      "height": 500
+      "width": 850,
+      "height": 700
     },
     "box": {
       "width": 100,
-      "height": 50
+      "height": 25
     },
     "panel": {
       "width": 100,
@@ -34,6 +34,7 @@
   "padding": {
     "xalign": 0.1,
     "yalign": 0.1,
-    "spacing": 10
+    "xspacing": 20,
+    "yspacing": 200
   }
 }
