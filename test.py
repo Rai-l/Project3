@@ -1,15 +1,12 @@
-
-#sample of tested code w. proper output/visual
-"""
 import pygame
 import sys
-from ui.screens.widgets.basic import Button, VBox, HBox, Text
-from ui.screens.widgets.basic.utility.file_manager import FileManager
+from ui.screens.widget_templates.basic_templates import Button, VBox, HBox, Text
+from ui.screens.widget_templates.basic_templates.utility.file_manager import FileManager
 
 clock=pygame.time.Clock()
 FPS=60
 
-def main():
+def mein():
     pygame.init()
     fileManager=FileManager("ui_data")
     data=fileManager.currData
@@ -18,10 +15,10 @@ def main():
     screen = pygame.display.set_mode((width, height))
     pygame.display.set_caption("Project3")
     running = True
-    button1=Button( screen, "Hi, I'm a textB :)")
-    text1=Text(screen, "I'm also a texttttttttt :)")
-    text2 = Text(screen, "I'm also a text1 :)")
-    vbox1=HBox(200, 400, 100, 100, False, False)
+    button1=Button( screen, 200, 100,"Hi, I'm a button1",)
+    text1=Text(screen, "I'm a text1 :)", 200,100)
+    text2 = Text(screen, "I'm also a text2 :)", 200, 100)
+    vbox1=HBox(200, 400, 100, 100, False)
     vbox1.insert(text1)
     vbox1.insert(text2)
     vbox1.insert(button1)
@@ -39,4 +36,4 @@ def main():
         clock.tick(FPS)
     pygame.quit()
 
-"""
+mein()

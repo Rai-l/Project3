@@ -7,7 +7,7 @@
   "text": {
     "size":{
       "heading": 20,
-      "normal": 17},
+      "normal": 12},
     "font": {
       "heading": "arial",
       "normal": "arial"
@@ -15,7 +15,7 @@
   },
   "ui_size": {
     "window": {
-      "width": 850,
+      "width": 1100,
       "height": 700
     },
     "box": {
