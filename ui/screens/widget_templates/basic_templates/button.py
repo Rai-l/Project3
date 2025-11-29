@@ -5,11 +5,11 @@ from .ui import Ui
 #make shape changeable
 
 class Button(Ui):
-    def __init__(self, screen, width, height, text=" ", xpos=0, ypos=0):
+    def __init__(self, screen, width, height, text=" ", xpos=0, ypos=0, wrap=False):
         super().__init__("button", width, height, xpos, ypos)
         self.screen = screen
         self.colors["primary"]=(25,25,25)
-        self.text = Text(screen, text, self.dim[0], self.dim[1], self.pos[0], self.pos[1])
+        self.text = Text(screen, text, self.dim[0], self.dim[1], self.pos[0], self.pos[1], wrap)
         self.rect = pygame.Rect(self.pos[0], self.pos[1], self.dim[0], self.dim[1])
         self.text.rect=self.rect
         self.text.setColor("primary", (255,255,255))
@@ -25,6 +25,7 @@ class Button(Ui):
     def buttonClicked(self, xpos, ypos):
         if self.rect.collidepoint(xpos, ypos):
             return True
+        return False
 
     def setPos(self, xpos, ypos):
         super().setPos(xpos, ypos)

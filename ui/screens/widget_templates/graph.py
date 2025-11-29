@@ -10,9 +10,9 @@ class Graph(Ui):
         self.screen=screen
         self.stepping = 1
         self.scaling = 40
-        self.xrange=width
-        self.yrange=height
-        self.scaleBounds=[20,50]
+        self.xrange=width/30
+        self.yrange=height/30
+        self.scaleBounds=[25,50]
         self.inRange=[]
         sampleData = {
             "N0": {"N1": 12, "N3": 5},
@@ -57,17 +57,14 @@ class Graph(Ui):
         self.updateScale()
     def draw(self):
         pygame.draw.rect(self.screen, self.colors["primary"], self.rect)
-        rDist = (self.xrange , self.yrange )
-        #get nodes in range
-        self.inRange=list(self.idx.intersection((self.currPos[0]-rDist[0], self.currPos[1]-rDist[1], self.currPos[0]+rDist[0], self.currPos[1]+rDist[1])))
-        #print(self.currPos[0]-rDist[0], self.currPos[1]-rDist[1], self.currPos[0]+rDist[0], self.currPos[1]+rDist[1])
+        rDist = (self.xrange*self.scaling , self.yrange*self.scaling )
+        self.inRange=list(self.idx.intersection(((self.currPos[0]-rDist[0]), (self.currPos[1]-rDist[1]), (self.currPos[0]+rDist[0]), (self.currPos[1]+rDist[1]))))
         self.interpretInRange()
         self.drawn=set()
         for n in self.inRange:
             self.drawBranches(n)
         for n in self.inRange:
             n.drawOffset((self.pos[0] + self.currPos[0]), (self.pos[1] + self.currPos[1]), self.dim[0], self.dim[1])
-            #print(self.nodes[n].pos)
         pass
 
     def interpretInRange(self):
@@ -125,6 +122,12 @@ class Graph(Ui):
             pass
         pass
 
+    def setDim(self, width, height):
+        super().overrideDimension(width, height)
+        self.xrange=width/60
+        self.yrange=height/60
+        self.rect = pygame.Rect(self.pos[0], self.pos[1], self.dim[0], self.dim[1])
+
     def checkConds(self, event):
         if self.rect.collidepoint(pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1]):
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -155,4 +158,5 @@ class Graph(Ui):
                     self.updateScale()
         if event.type == pygame.MOUSEBUTTONUP:
             self.dragging = False
+
         pass

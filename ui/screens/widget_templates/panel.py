@@ -1,8 +1,6 @@
 import pygame
-from .basic_templates.v_box import VBox
-from .basic_templates.text import Text
+from .basic_templates.v_box import VBox, Ui
 from .mini_panel import MiniPanel
-from .basic_templates.ui import Ui
 class Panel(Ui):
     def __init__(self, screen, width, height, items=6, xpos=0, ypos=0, bckgd=False):
         super().__init__("panel", width, height, xpos, ypos)

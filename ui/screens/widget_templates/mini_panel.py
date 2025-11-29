@@ -1,7 +1,5 @@
 import pygame
-from .basic_templates.h_box import HBox
-from .basic_templates.text import Text
-from .basic_templates.ui import Ui
+from .basic_templates import Ui, HBox, Text
 
 class MiniPanel(Ui):
     def __init__(self, screen, label1, object, width, height, xpos=0, ypos=0, bckgd=False):
@@ -12,10 +10,11 @@ class MiniPanel(Ui):
         self.setUp(label1, object)
         pass
 
-    def setUp(self, label, object):
-        text=Text(self.screen, label,self.dim[0]/2, self.dim[1])
+    def setUp(self, label, object=None):
+        text=Text(self.screen, label,self.dim[0]/2, self.dim[1]) if isinstance(label, str) else label
         self.hBox.insert(text)
-        self.hBox.insert(object)
+        if object:
+            self.hBox.insert(object)
 
     def draw(self):
         if self.bckgd:

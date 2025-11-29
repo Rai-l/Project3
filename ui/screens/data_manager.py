@@ -1,4 +1,4 @@
-
+import os
 
 class DataManager:
     def __init__(self):
@@ -54,6 +54,9 @@ class DataManager:
         else:
             return "None"
     def parseFile(self,filepath):
+        if not os.path.exists(filepath):
+            print("invalid path")
+            return
         with open(filepath, "r") as f:
             content=f.read()
         self.parseData(content)
@@ -61,26 +64,31 @@ class DataManager:
 
     def parseData(self, data=None):
         #string data->adj list, expecting strings of from to weight
-        strData = data
-        if data==None:
-            strData="N0 N1 12\nN0 N3 5\n"
-        for i in range(strData.count("\n")):
-            enterPos=strData.find("\n")
-            line=strData[:enterPos]
-            strData=strData[enterPos+1:]
-            spacePos=line.find(" ")
-            while (len(line)>0):
-                fromNode=line[:spacePos+1]
-                spacePos = line.find(" ")
-                line=line[spacePos+1:]
-                spacePos = line.find(" ")
-                toNode=line[:spacePos+1]
-                line = line[spacePos + 1:]
-                spacePos = line.find(" ")
-                weight = int(line[:spacePos+1]) if spacePos!=-1 else int(line)
-                self.data[fromNode] = {toNode: weight}
-                line=""
-        self.setData()
+        print("parsing data...")
+        try:
+            strData = data
+            if data==None:
+                strData="N0 N1 12\nN0 N3 5\n"
+            for i in range(strData.count("\n")):
+                enterPos=strData.find("\n")
+                line=strData[:enterPos]
+                strData=strData[enterPos+1:]
+                spacePos=line.find(" ")
+                while (len(line)>0):
+                    fromNode=line[:spacePos+1]
+                    spacePos = line.find(" ")
+                    line=line[spacePos+1:]
+                    spacePos = line.find(" ")
+                    toNode=line[:spacePos+1]
+                    line = line[spacePos + 1:]
+                    spacePos = line.find(" ")
+                    weight = int(line[:spacePos+1]) if spacePos!=-1 else int(line)
+                    self.data[fromNode] = {toNode: weight}
+                    line=""
+            self.setData()
+        except Exception:
+            print("invalid data")
+            return
         pass
 
     def setData(self):
@@ -89,8 +97,10 @@ class DataManager:
         self.path={}
 
     def loadData(self, input, type):
+        print("got sig")
         if type=="file":
             self.parseFile(input)
         elif type=="text":
+            print("got text")
             self.parseData(input)
         pass

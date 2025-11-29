@@ -27,7 +27,7 @@ class MainScreen():
         self.elements["label"] = text
         pass
 
-    def update(self, elemName, input=None, type=None):
+    def update(self, elemName):
         panel=self.elements["display_panel"]
         graph=self.elements["graph"]
         dataManager=self.dataManager
@@ -38,9 +38,7 @@ class MainScreen():
                 panel.updateData("selected_adj", dataManager.getAdj(nodeName))
             else:
                 panel.updateData("selected_adj", nodeName)
-            print(nodeName)
         elif elemName=="source":
-            # compute with new source on data manager
             newNode = graph.sourceNode.id
             dataManager.setSource(newNode)
             graph.highlightPath(dataManager.path)
@@ -48,12 +46,11 @@ class MainScreen():
             panel.updateData("computed_adj", dataManager.getAdj(newNode))
             panel.updateData("computed_path", dataManager.getPath())
         elif elemName=="mode":
-            #update data manager mode and recompute
             dataManager.setMode(panel.data["curr_mode"])
             graph.highlightPath(dataManager.path)
             panel.updateData("computed_path", dataManager.getPath())
         elif elemName=="input":
-            self.loadGraph(input, type)
+            self.loadGraph(panel.input, panel.inputType)
             self.update("preset")
         elif elemName=="preset":
             panel.updateData("num_nodes", str(dataManager.num_nodes))
@@ -73,7 +70,7 @@ class MainScreen():
 
 
     def draw(self):
-        rect = pygame.Rect(0, 0, 420, self.height)
+        rect = pygame.Rect(0, 0, 430, self.height)
         self.elements["graph"].draw()
         pygame.draw.rect(self.screen, self.primary, rect)
         for key, val in self.elements.items():
@@ -81,16 +78,20 @@ class MainScreen():
                 val.draw()
 
 
-    def updatePanel(self):
-        pass
+    def setDim(self, width, height):
+        self.width=width
+        self.height=height
+        self.elements["display_panel"].setPos(10, self.height-(310))
+        self.elements["graph"].setDim(self.width-420, self.height)
 
     def checkConds(self, event):
         displaySig=self.elements["display_panel"].checkConds(event)
         graphSig=self.elements["graph"].checkConds(event)
         if displaySig and len(displaySig)>0:
             self.update(displaySig)
-
         if graphSig and len(graphSig)>0:
             self.update(graphSig)
+        if event.type==pygame.VIDEORESIZE:
+            self.setDim(event.w, event.h)
 
         pass

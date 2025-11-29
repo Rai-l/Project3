@@ -1,7 +1,6 @@
 import pygame
 
-from .basic_templates.button import Button
-from .basic_templates.ui import Ui
+from .basic_templates import Button, Ui
 class Node(Ui):
     def __init__(self, screen, id, adjVals, posCoord, radius):
         super().__init__("node", radius, radius, posCoord[0], posCoord[1])
@@ -13,7 +12,7 @@ class Node(Ui):
         self.screen = screen
         self.selected=False
         self.highlight=False
-        self.button=Button(screen,self.dim[0]*3/5, self.dim[0]*3/5, self.id, self.pos[0], self.pos[1])
+        self.button=Button(screen,self.dim[0]*3/5, self.dim[0]*3/5, self.id, self.pos[0], self.pos[1], True)
         self.button.setTextSize(int(self.dim[0]*2/3))
         self.button.overrideDimension(radius,radius)
         self.button.colors["primary"]=(20,20,20)

@@ -9,10 +9,12 @@ FPS=60
 
 def main():
     pygame.init()
+    pygame.scrap.init()
     fileManager=FileManager("ui_data")
     data=fileManager.currData
     width = data["ui_size"]["window"]["width"]
     height = data["ui_size"]["window"]["height"]
+    minDim = (width, height)
     screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
     pygame.display.set_caption("Project3")
     running = True
@@ -23,7 +25,14 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             else:
-                mainScreen.checkConds(event)
+                if event.type==pygame.VIDEORESIZE:
+                        if (event.w>=minDim[0] and event.h>=minDim[1]):
+                            mainScreen.checkConds(event)
+                        newWidth= minDim[0] if event.w<minDim[0] else event.w
+                        newHeight= minDim[1] if event.h<minDim[1] else event.h
+                        screen = pygame.display.set_mode((newWidth, newHeight), pygame.RESIZABLE)
+                else:
+                    mainScreen.checkConds(event)
         mainScreen.draw()
         pygame.display.flip()
         clock.tick(FPS)

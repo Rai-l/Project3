@@ -9,7 +9,7 @@ class Container(Ui):
         self.yspacing=0
         self.xalign=0
         self.yalign=0.01
-    def setPadding(self, xspacing=200, yspacing=20, xalign=0, yalign=0):
+    def setPadding(self, xspacing=0, yspacing=0, xalign=0, yalign=0):
         self.xspacing=xspacing
         self.yspacing=yspacing
         self.xalign=xalign
