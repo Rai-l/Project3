@@ -30,7 +30,7 @@ class InputBox(Ui):
         dx=xpos-self.pos[0]
         dy=ypos-self.pos[1]
 
-        row=max(0, min((round(dy// self.text.getFont().get_height()), len(self.lines)-1)))
+        row=max(0, min((round(dy// self.text.getFont().get_height())+self.offset, len(self.lines)-1)))
         text=self.lines[row]
         self.cursorPos[0]=row
         for i in range(len(text)):
