@@ -27,16 +27,21 @@ class InputBox(Ui):
         self.selected=False
 
     def calcPos(self, xpos, ypos):
-        dx=xpos-self.pos[0]
-        dy=ypos-self.pos[1]
+        '''
+        init_y=0
+        for i in range(self.offset, min(self.offset + self.lineSlots, len(self.lines))):
+            self.text.setText(self.lines[i])
+            self.text.setPos(self.pos[0], self.pos[1] + init_y)
+            if (self.text.pos[1]+self.text.dim[1])<=ypos:
+                self.cursorPos[0]=i
+            for j in range(len(self.text.text)):
+                for k in range(len(self.text.text[j])):
+                    width = self.text.getFont().size(self.text.text[j][:k])[0]+self.text.pos[0]
+                    if width <= xpos:
+                        self.cursorPos[1] = k
 
-        row=max(0, min((round(dy// self.text.getFont().get_height())+self.offset, len(self.lines)-1)))
-        text=self.lines[row]
-        self.cursorPos[0]=row
-        for i in range(len(text)):
-            width= self.text.getFont().size(text[:i])[0]
-            if width<=dx:
-                self.cursorPos[1]=i
+            init_y += self.text.getFont().get_height() * len(self.text.text)
+        '''
         pass
 
     def editInput(self, input):
@@ -135,10 +140,17 @@ class InputBox(Ui):
             if i==self.cursorPos[0]:
                 cursorOff=self.text.getFont().size(self.lines[self.cursorPos[0]][:self.cursorPos[1]])
                 if cursorOff[0]>self.dim[0]:
-                    cursorOff = self.text.getFont().size(self.text.text[len(self.text.text)-1])
+                    temp=self.cursorPos[1]
+                    print(self.cursorPos[1])
+                    for j in range(len(self.text.text)):
+                        if temp<=len(self.text.text[j]):
+                            print("smaller")
+                            cursorOff = self.text.getFont().size(self.text.text[j][:temp])
+                            break
+                        temp -= len(self.text.text[j])
+                        print("minus"+str(len(self.text.text[j]))+"="+str(temp))
                     self.updateCursorPos(cursorOff[0], init_y+((len(self.text.text)-1)*cursorOff[1]))
                 else:
-                    yoff=0
                     self.updateCursorPos(cursorOff[0], init_y)
                 pygame.draw.rect(self.screen, (255,255,255), self.cursor)
             self.text.draw()
