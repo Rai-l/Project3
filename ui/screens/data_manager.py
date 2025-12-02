@@ -112,12 +112,24 @@ class DataManager:
         self.num_nodes=len(self.data)
         self.source=None
         self.path={}
+    def getGenerated(self):
+        data=None
+        if data==None:
+            self.data={
+            "N0": {"N1": 12, "N3": 5},
+            "N1": {"N2": 3, "N4": 8},
+            "N2": {"N0": 9},
+            "N3": {"N2": 4, "N5": 7},
+            "N4": {"N3": 6},
+            "N5": {}
+        }
+        self.setData()
 
     def loadData(self, input, type):
-        print("got sig")
         if type=="file":
             self.parseFile(input)
         elif type=="text":
-            print("got text")
             self.parseData(input)
+        elif type=="random":
+            self.getGenerated()
         pass

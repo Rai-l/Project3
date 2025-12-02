@@ -53,7 +53,10 @@ class DisplayPanel():
         button = Button(self.screen, elemDim[0], elemDim[1]*(4/5),"File")
         self.elements["file_input"] = button
         hbox.insert(button)
-        hbox.setPadding(60)
+        button = Button(self.screen, elemDim[0], elemDim[1] * (4 / 5), "Random")
+        self.elements["random_input"] = button
+        hbox.insert(button)
+        hbox.setPadding(5)
         self.panel.insert("Please Select an Input", hbox)
         text = Text(self.screen,self.data["num_nodes"],elemDim[0], elemDim[1])
         hbox = HBox(self.pos[0], self.pos[1], self.dim[0], self.dim[1])
@@ -156,6 +159,8 @@ class DisplayPanel():
             if self.data["curr_mode"] != "BFS":
                 self.data["curr_mode"] = "BFS"
                 return "mode"
+        elif name == "random_input":
+            return "random"
         pass
 
     def buttonClicked(self, xpos, ypos):

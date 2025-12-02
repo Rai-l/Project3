@@ -1,5 +1,5 @@
 # Project3
+Description:
+The program is a weight based the shortest pathfinder implemented with the algorithms, Dijkastra and BFS.
 
-Please write any notes/ comments others should know/ follow for consistency
-
--all file/directory names are lowercase and if multiple words, are seperated by '_'
+Usage of program:

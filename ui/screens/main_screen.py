@@ -59,6 +59,9 @@ class MainScreen():
             panel.updateData("computed", "None")
             panel.updateData("computed_adj", "None")
             panel.updateData("computed_path", "None")
+        elif elemName == "random":
+            self.loadGraph("random", "random")
+            self.update("preset")
 
 
     def loadGraph(self, input, type="text"):
