@@ -38,12 +38,18 @@ class MainScreen():
                 panel.updateData("selected_adj", dataManager.getAdj(nodeName))
             else:
                 panel.updateData("selected_adj", nodeName)
-        elif elemName=="source":
-            newNode = graph.sourceNode.id
-            dataManager.setSource(newNode)
-            graph.highlightPath(dataManager.path)
+        elif elemName == "source":
+            newSource = graph.sourceNode.id
+            dataManager.setSource(newSource)
             panel.updateData("computed", dataManager.source)
-            panel.updateData("computed_adj", dataManager.getAdj(newNode))
+            panel.updateData("computed2", dataManager.end)
+            panel.updateData("computed_path", dataManager.getPath())
+        elif elemName=="end_node":
+            newEnd = graph.endNode.id
+            dataManager.setEnd(newEnd)
+            if dataManager.path: graph.highlightPath(dataManager.path)
+            panel.updateData("computed", dataManager.source)
+            panel.updateData("computed2", dataManager.end)
             panel.updateData("computed_path", dataManager.getPath())
         elif elemName=="mode":
             dataManager.setMode(panel.data["curr_mode"])
@@ -57,7 +63,7 @@ class MainScreen():
             panel.updateData("selected", "None")
             panel.updateData("selected_adj", "None")
             panel.updateData("computed", "None")
-            panel.updateData("computed_adj", "None")
+            panel.updateData("computed2", "None")
             panel.updateData("computed_path", "None")
         elif elemName == "random":
             self.loadGraph("random", "random")

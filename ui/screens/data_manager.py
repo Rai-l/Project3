@@ -7,7 +7,7 @@ class DataManager:
         data (dict): Adjacency list representing the graph.
         num_nodes (int): Number of nodes in the graph.
         source (str): The source node for pathfinding.
-        path (dict): Computed paths from the source node.   
+        path (dict): Computed paths from the source node containing string key and int weight.
         mode (str): Pathfinding algorithm mode ("dijkstra" or "BFS").
     '''
     def __init__(self):
@@ -23,6 +23,7 @@ class DataManager:
         }
         self.num_nodes=len(self.data)
         self.source=None
+        self.end=None
         self.path={}
         self.mode="dijkstra"
 
@@ -55,18 +56,27 @@ class DataManager:
 
     def setSource(self, node):
         self.source = node
-        self.generatePath()
+        if self.end:
+            self.generatePath()
+        else:
+            self.path={}
         pass
 
+    def setEnd(self, node):
+        self.end=node
+        self.generatePath()
+
     def generatePath(self):
-        if self.source:
+        if self.source and self.end:
+            if self.source==self.end:
+                self.path={}
             if self.mode == "dijkstra":
                 pass
             elif self.mode == "BFS":
                 pass
 
     def getPath(self):
-        if self.source:
+        if len(self.path)>0:
             return "a stringified path need impll"
         else:
             return "None"

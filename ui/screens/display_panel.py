@@ -34,7 +34,7 @@ class DisplayPanel():
             "selected": "None",
             "selected_adj": "None",
             "computed":"None",
-            "computed_adj":"None",
+            "computed2":"None",
             "computed_path":"None",
             "curr_mode": "dijkstra"
         }
@@ -82,12 +82,12 @@ class DisplayPanel():
         hbox.insert(text)
         hbox.setPadding(0, 0, 0.08)
         self.panel.insert("Computed Node:", hbox)
-        text = Text(self.screen, self.data["computed_adj"], elemDim[0]+40, elemDim[1],0,0,True)
-        self.elements["computed_adj"] = text
+        text = Text(self.screen, self.data["computed2"], elemDim[0]+40, elemDim[1],0,0,True)
+        self.elements["computed2"] = text
         hbox = HBox(self.pos[0], self.pos[1], self.dim[0], self.dim[1])
         hbox.insert(text)
         hbox.setPadding(0, 0, 0.08)
-        self.panel.insert("Computed Node Adjacents:", hbox)
+        self.panel.insert("Computed Node 2:", hbox)
         text = Text(self.screen, self.data["computed_path"], elemDim[0]+40, elemDim[1],0,0,True)
         self.elements["computed_path"] = text
         hbox = HBox(self.pos[0], self.pos[1], self.dim[0], self.dim[1])

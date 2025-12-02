@@ -51,6 +51,7 @@ class Graph(Ui):
         }
         self.initialPt=(0,0)
         self.dragStartPos=(0,0)
+        self.clickCount=0
         self.graphData=graphData if graphData else sampleData
 
         norm = {}
@@ -77,6 +78,7 @@ class Graph(Ui):
         self.idx=index.Index()
         self.selectedNode=None
         self.sourceNode=None
+        self.endNode = None
         self.nodeMap = {}
         self.colors["primary"]=(45,45,45)
         self.radius=15
@@ -139,16 +141,16 @@ class Graph(Ui):
     def highlightPath(self, nodes):
         '''
         Unhighlight prev highlighted nodes and highlight given nodes in the form of dict with string keys and Node vals
-        :param nodes(dictionary): copy of a dictionary consisting of string key; node names and their respective Node objects
+        :param nodes(dictionary): copy of a dictionary consisting of string key; node names and their respective weights
         :return: None
         '''
         if nodes==None: return
         if len(self.highlighted)>0:
-            for key, val in self.highlighted.items():
+            for key, val in self.highlighted:
                 val.unhighlight()
-        self.highlighted=nodes
-        for key, val in self.highlighted.items():
-            val.highlight()
+        for node in nodes:
+            self.highlighted[node]=self.graphData[node]
+            self.graphData[node].highlight()
         pass
 
     def buttonClicked(self,xpos,ypos):
@@ -164,12 +166,22 @@ class Graph(Ui):
         for key, val in self.nodes.items():
             if val.buttonClicked(xpos,ypos):
                 if val==self.selectedNode:
-                    self.sourceNode=val
-                    return "source"
+                    if self.clickCount<1:
+                        self.sourceNode=val
+                        self.clickCount+=1
+                        return "source"
+                    else:
+                        self.endNode=val
+                        self.clickCount=0
+                        return "end_node"
                 elif self.selectedNode != val and self.selectedNode:
                     self.selectedNode.deselect()
+                    self.clickCount=0
+                else: self.clickCount=0
+
                 self.selectedNode=val
                 return "selected"
+        self.clickCount=0
         return "deselected"
 
     def drawBranches(self, currNode):
