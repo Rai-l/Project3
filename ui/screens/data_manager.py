@@ -43,9 +43,9 @@ class DataManager:
             for key, val in nodes.items():
                 count += 1
                 if count != 1:
-                    stringified += ", " + key + " : " + str(val)
+                    stringified += ", " + key + " : [" + str(val[0])+","+str(val[1])+"]"
                 else:
-                    stringified += key + " : " + str(val)
+                    stringified += key + " : [" + str(val[0])+","+str(val[1])+"]"
 
         stringified += "}"
         return stringified
@@ -109,8 +109,11 @@ class DataManager:
                     toNode=line[:spacePos+1]
                     line = line[spacePos + 1:]
                     spacePos = line.find(" ")
-                    weight = int(line[:spacePos+1]) if spacePos!=-1 else int(line)
-                    self.data[fromNode] = {toNode: weight}
+                    weight1 = int(line[:spacePos+1])
+                    line = line[spacePos + 1:]
+                    spacePos = line.find(" ")
+                    weight2 = int(line[:spacePos + 1]) if spacePos != -1 else int(line)
+                    self.data[fromNode] = {toNode: [weight1, weight2]}
                     line=""
             self.setData()
         except Exception:
