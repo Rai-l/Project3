@@ -2,10 +2,10 @@ import sys
 
 
 class PriorityQueue:
-    def __init__(self, weight1, weight2):
+    def __init__(self):
         self.queue1 = []
-        self.weight1 = weight1
-        self.weight2 = weight2
+        self.weight1 = 1
+        self.weight2 = 0
 
     def insert(self, edge):
         self.queue1.append(edge)

@@ -3,28 +3,38 @@ import string
 import sys
 import backend.Algorithims.priority_queue as pq
 
+
 class AdjacencyList:
     def __init__(self):
         self.graph = {}
+        self.dispay_graph = {}
 
+    #inserts and edge into the adjacency list.
     def insert(self, point_A, point_B, time_taken, resource_needed):
         if len(self.graph) == 1:
             self.graph.clear()
         val1 = [point_B, time_taken, resource_needed]
         val2 = [point_A, time_taken, resource_needed]
+        val3 = {point_B : [time_taken, resource_needed]}
         if point_A not in self.graph.keys():
             self.graph.update({point_A : []})
         if point_B not in self.graph.keys() and point_B is not None:
             self.graph.update({point_B : []})
+            self.dispay_graph.update({point_B: {}})
         self.graph[point_A].append(val1)
         if point_B is not None:
             self.graph[point_B].append(val2)
+        self.dispay_graph.update({point_A : val3})
 
     def get_adjacent(self, node):
         return self.graph.get(node)
 
     def get_graph(self):
         return self.graph
+
+# get display graph returns the graph in the format you requested
+    def get_display_graph(self):
+        return self.dispay_graph
 
     def randomly_generate(self, number_of_nodes, max_time, max_resource):
         self.graph.clear()
@@ -69,8 +79,8 @@ class AdjacencyList:
             return True
         return False
 
-    def dijkstra(self, nodeA, weight1, weight2):
-        q = pq.PriorityQueue(weight1, weight2)
+    def dijkstra(self, nodeA, nodeB, weight1, weight2):
+        q = pq.PriorityQueue()
         nodes = list(self.graph.keys())
         time_taken = [sys.maxsize] * len(nodes)
         resources_needed = [sys.maxsize] * len(nodes)
@@ -101,5 +111,10 @@ class AdjacencyList:
                     resources_needed[index_n1] = resources_needed[index_n] + r1
                     previous_node[index_n1] = n
                     q.insert([n1, time_taken[index_n1], resources_needed[index_n1]])
-        return nodes, time_taken, resources_needed, weighted_distance, previous_node
-
+        reverse_path = [nodeB]
+        index_path = nodes.index(nodeB)
+        while nodes[index_path] != nodeA:
+            reverse_path.append(previous_node[index_path])
+            index_path = nodes.index(previous_node[index_path])
+        path = list(reverse_path.reverse())
+        return path

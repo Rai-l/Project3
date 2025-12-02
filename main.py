@@ -9,13 +9,13 @@ FPS=60
 
 def main():
     pygame.init()
-    pygame.scrap.init()
     fileManager=FileManager("ui_data")
     data=fileManager.currData
     width = data["ui_size"]["window"]["width"]
     height = data["ui_size"]["window"]["height"]
     minDim = (width, height)
     screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
+    pygame.scrap.init()
     pygame.display.set_caption("Project3")
     running = True
     mainScreen=MainScreen(screen, width, height)
