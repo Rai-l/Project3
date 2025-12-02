@@ -62,14 +62,17 @@ class Text(Ui):
             return False
     def draw(self):
         ypos=0
-        for word in self.text:
-            renderText = self.font.render(word, True, self.colors["primary"])
-            centerCoord = renderText.get_rect(center=self.rect.center)
-            placement = (centerCoord[0],self.pos[1])
+        for line in self.text:
+            renderText = self.font.render(line, True, self.colors["primary"])
+            # compute horizontal position
             if self.align == "top_left":
-                placement = (self.pos[0], self.pos[1])
-            self.screen.blit(renderText, (placement[0],placement[1]+ypos))
-            ypos+=self.font.get_height()
+                x = self.pos[0]
+            else:
+                # center horizontally within the textbox
+                x = int(self.pos[0] + (self.dim[0] - renderText.get_width()) / 2)
+            y = int(self.pos[1] + ypos)
+            self.screen.blit(renderText, (x, y))
+            ypos += self.font.get_height()
 
 
     def setPos(self, xpos, ypos):
@@ -102,17 +105,17 @@ class Text(Ui):
         :param delim(string):
         :return:
         '''
-        oldText = [text]
-        line = ""
+        # Respect explicit newlines first
+        segments = text.split(delim)
         newText = []
-        if len(oldText) == 1 and len(oldText[0])<=5: return [text]
-        for i in range(len(oldText)):
-            for j in range(len(oldText[i])):
-                if self.font.size(line + oldText[i][j])[0] <= self.dim[0]:
-                    line += oldText[i][j]
+        for seg in segments:
+            line = ""
+            for ch in seg:
+                if self.font.size(line + ch)[0] <= self.dim[0]:
+                    line += ch
                 else:
                     newText.append(line)
-                    line = oldText[i][j]
+                    line = ch
             newText.append(line)
         return newText
 
@@ -123,20 +126,30 @@ class Text(Ui):
         :param delim(string):
         :return:
         '''
-        oldText = [text]
-        line = ""
-        newText = []
-        if len(oldText) == 1 and len(oldText[0])<=5: return [text]
-        for word in oldText:
-            if self.font.size(line + word)[0] <= self.dim[0] and word!=delim:
-                line += word
-            else:
-                if word==delim:
-                    newText.append(line)
-                    line = ""
+        # First, split text by explicit newline paragraphs
+        paragraphs = text.split(delim)
+        lines = []
+        for para in paragraphs:
+            words = para.split()
+            if not words:
+                # preserve empty line
+                lines.append("")
+                continue
+            line = words[0]
+            for w in words[1:]:
+                candidate = line + ' ' + w
+                if self.font.size(candidate)[0] <= self.dim[0]:
+                    line = candidate
                 else:
-                    newText.append(line)
-                    line = word
-            newText.append(line)
-        return newText
+                    lines.append(line)
+                    # if single word longer than width, fall back to char wrap for that word
+                    if self.font.size(w)[0] > self.dim[0]:
+                        for sub in self.wrapChar(w):
+                            lines.append(sub)
+                        line = ""
+                    else:
+                        line = w
+            if line:
+                lines.append(line)
+        return lines
 

@@ -1,4 +1,3 @@
-
 from .widget_templates.basic_templates import VBox, HBox, Text, Button
 from .widget_templates.panel import Panel
 from .widget_templates.basic_templates.input_box import InputBox
@@ -58,37 +57,37 @@ class DisplayPanel():
         hbox.insert(button)
         hbox.setPadding(5)
         self.panel.insert("Please Select an Input", hbox)
-        text = Text(self.screen,self.data["num_nodes"],elemDim[0], elemDim[1])
+        text = Text(self.screen,self.data["num_nodes"],elemDim[0]+120, elemDim[1])
         hbox = HBox(self.pos[0], self.pos[1], self.dim[0], self.dim[1])
         hbox.insert(text)
         hbox.setPadding(0,0,0.13)
         self.elements["num_nodes"] = text
         self.panel.insert("Number of Nodes:", hbox)
-        text = Text(self.screen, self.data["selected"], elemDim[0]+40, elemDim[1],0,0,True)
+        text = Text(self.screen, self.data["selected"], elemDim[0]+120, elemDim[1],0,0,True)
         hbox = HBox(self.pos[0], self.pos[1], self.dim[0], self.dim[1])
         hbox.insert(text)
         hbox.setPadding(0, 0, 0.08)
         self.elements["selected"] = text
         self.panel.insert("Selected Node:", hbox)
-        text = Text(self.screen, self.data["selected_adj"], elemDim[0]+40, elemDim[1],0,0,True)
+        text = Text(self.screen, self.data["selected_adj"], elemDim[0]+120, elemDim[1],0,0,True)
         self.elements["selected_adj"] = text
         hbox = HBox(self.pos[0], self.pos[1], self.dim[0], self.dim[1])
         hbox.insert(text)
         hbox.setPadding(0, 0, 0.08)
         self.panel.insert("Selected Adjacents:", hbox)
-        text = Text(self.screen, self.data["computed"], elemDim[0]+40, elemDim[1],0,0,True)
+        text = Text(self.screen, self.data["computed"], elemDim[0]+120, elemDim[1],0,0,True)
         self.elements["computed"] = text
         hbox = HBox(self.pos[0], self.pos[1], self.dim[0], self.dim[1])
         hbox.insert(text)
         hbox.setPadding(0, 0, 0.08)
         self.panel.insert("Computed Node:", hbox)
-        text = Text(self.screen, self.data["computed2"], elemDim[0]+40, elemDim[1],0,0,True)
+        text = Text(self.screen, self.data["computed2"], elemDim[0]+120, elemDim[1],0,0,True)
         self.elements["computed2"] = text
         hbox = HBox(self.pos[0], self.pos[1], self.dim[0], self.dim[1])
         hbox.insert(text)
         hbox.setPadding(0, 0, 0.08)
         self.panel.insert("Computed Node 2:", hbox)
-        text = Text(self.screen, self.data["computed_path"], elemDim[0]+40, elemDim[1],0,0,True)
+        text = Text(self.screen, self.data["computed_path"], elemDim[0]+120, elemDim[1],0,0,True)
         self.elements["computed_path"] = text
         hbox = HBox(self.pos[0], self.pos[1], self.dim[0], self.dim[1])
         hbox.insert(text)
@@ -158,6 +157,7 @@ class DisplayPanel():
         elif name == "BFS_mode":
             if self.data["curr_mode"] != "BFS":
                 self.data["curr_mode"] = "BFS"
+                print("BFS")
                 return "mode"
         elif name == "random_input":
             return "random"
@@ -179,7 +179,10 @@ class DisplayPanel():
         sig=None
         if self.rect.collidepoint(pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1]):
             if event.type == pygame.MOUSEBUTTONDOWN:
-                sig=self.buttonClicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]) if self.buttonClicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]) else sig
+                # call buttonClicked once and capture its return value (if any)
+                result = self.buttonClicked(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+                if result:
+                    sig = result
         if self.elements["filePanel"].checkConds(event):
             sig= self.elements["filePanel"].checkConds(event)
             self.inputType="file"

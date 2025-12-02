@@ -29,7 +29,8 @@ class Node(Ui):
         self.selected=False
         self.screen = screen
         self.selected=False
-        self.highlight=False
+        # use _highlight to avoid name collision with the highlight() method
+        self._highlight=False
         self.button=Button(screen,self.dim[0]*3/5, self.dim[0]*3/5, self.id, self.pos[0], self.pos[1], True)
         self.button.setTextSize(int(self.dim[0]*2/3))
         self.button.overrideDimension(radius,radius)
@@ -44,12 +45,12 @@ class Node(Ui):
         self.selected=False
 
     def isHighlighted(self):
-        return self.highlight
+        return self._highlight
     def highlight(self):
-        self.highlight=True
+        self._highlight=True
 
     def unhighlight(self):
-        self.highlight=False
+        self._highlight=False
 
     def buttonClicked(self,xpos,ypos):
         if (self.button.buttonClicked(xpos, ypos)):
@@ -66,7 +67,7 @@ class Node(Ui):
         '''Draws the node on the screen with its current properties.''' 
         offset = ((self.pos[0]) * self.scaling, (self.pos[1]) * self.scaling)
         pygame.draw.circle(self.screen, self.colors["primary"], self.pos, self.dim[0])
-        if (self.selected or self.highlight):
+        if (self.selected or self._highlight):
             border=self.colors["selected"] if self.selected else self.colors["highlight"]
             pygame.draw.circle(self.screen, border, self.pos, self.self.dim[0], 2)
         self.button.draw()
@@ -82,8 +83,8 @@ class Node(Ui):
         if self.dim[0]>self.maxR:
             self.dim=(self.maxR, self.maxR)
         pygame.draw.circle(self.screen, self.colors["primary"], offset, self.dim[0])
-        if self.selected or self.highlight:
-            border = self.colors["selected"] if self.selected else self.colors["highlight"]
+        if self.selected or self._highlight:
+            border = self.colors["selected"] if self.selected else self.colors["highlighted"]
             pygame.draw.circle(self.screen, border, offset, self.dim[0], 2)
         #self.button.overrideDimension(self.dim[0]*self.scaling*3/5, self.dim[0]*self.scaling*3/5)
         self.button.setPos(offset[0]-(self.dim[0]/2), offset[1]-(self.dim[0]/2))

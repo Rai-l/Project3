@@ -140,17 +140,29 @@ class Graph(Ui):
 
     def highlightPath(self, nodes):
         '''
-        Unhighlight prev highlighted nodes and highlight given nodes in the form of dict with string keys and Node vals
-        :param nodes(dictionary): copy of a dictionary consisting of string key; node names and their respective weights
+        Unhighlight prev highlighted nodes and highlight given nodes in the form of an iterable of node ids
+        :param nodes(iterable): node id strings to highlight
         :return: None
         '''
-        if nodes==None: return
-        if len(self.highlighted)>0:
-            for key, val in self.highlighted:
+        if not nodes:
+            # clear any existing highlights
+            for k, v in list(self.highlighted.items()):
+                v.unhighlight()
+            self.highlighted = {}
+            return
+
+        # unhighlight previous
+        if len(self.highlighted) > 0:
+            for key, val in list(self.highlighted.items()):
                 val.unhighlight()
-        for node in nodes:
-            self.highlighted[node]=self.graphData[node]
-            self.graphData[node].highlight()
+        self.highlighted = {}
+
+        # highlight given nodes (list of ids)
+        for node_id in nodes:
+            node_obj = self.nodeMap.get(node_id)
+            if node_obj:
+                self.highlighted[node_id] = node_obj
+                node_obj.highlight()
         pass
 
     def buttonClicked(self,xpos,ypos):

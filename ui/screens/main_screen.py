@@ -20,8 +20,24 @@ class MainScreen():
         self.elements["display_panel"]=displayPanel
         graph = Graph(self.screen,self.width-420, self.height, 420,0, self.dataManager.data)
         self.elements["graph"]=graph
+        # subscribe graph to path updates from data manager so highlighting is automatic
+        def _on_path_update(path_list, path_info, path_dict):
+            try:
+                # path_list is preferred (ordered), fall back to keys of path_dict
+                if path_list and len(path_list) > 0:
+                    self.elements["graph"].highlightPath(path_list)
+                elif isinstance(path_dict, dict) and len(path_dict) > 0:
+                    self.elements["graph"].highlightPath(list(path_dict.keys()))
+                else:
+                    self.elements["graph"].highlightPath(None)
+            except Exception:
+                pass
+
+        self.dataManager.on_path_update = _on_path_update
         self.update("preset")
-        text= Text(self.screen, "Shortest Weighted Path Finder", 200, 100, 420/4)
+        # initialize computed num_nodes
+        self.elements["display_panel"].updateData("num_nodes", str(self.dataManager.num_nodes))
+        text= Text(self.screen, "Shortest Path Finder", 200, 100, 420/4)
         text.resize(25)
         text.setColor("primary", (255,255,255))
         self.elements["label"] = text
@@ -47,11 +63,12 @@ class MainScreen():
         elif elemName=="end_node":
             newEnd = graph.endNode.id
             dataManager.setEnd(newEnd)
-            if dataManager.path: graph.highlightPath(dataManager.path)
+            if len(dataManager.path)>0: graph.highlightPath(dataManager.path)
             panel.updateData("computed", dataManager.source)
             panel.updateData("computed2", dataManager.end)
             panel.updateData("computed_path", dataManager.getPath())
         elif elemName=="mode":
+            print("mode")
             dataManager.setMode(panel.data["curr_mode"])
             graph.highlightPath(dataManager.path)
             panel.updateData("computed_path", dataManager.getPath())
@@ -73,9 +90,25 @@ class MainScreen():
     def loadGraph(self, input, type="text"):
         dataManager=self.dataManager
         self.dataManager.loadData(input, type)
-        self.elements["graph"]=Graph(self.screen,self.width-420, self.height, 420,0, dataManager.data)
+        # recreate graph with new data
+        self.elements["graph"] = Graph(self.screen, self.width-420, self.height, 420, 0, dataManager.data)
 
+        # re-subscribe graph to path updates so highlighting remains automatic after recreation
+        def _on_path_update(path_list, path_info, path_dict):
+            try:
+                if path_list and len(path_list) > 0:
+                    self.elements["graph"].highlightPath(path_list)
+                elif isinstance(path_dict, dict) and len(path_dict) > 0:
+                    self.elements["graph"].highlightPath(list(path_dict.keys()))
+                else:
+                    self.elements["graph"].highlightPath(None)
+            except Exception:
+                pass
 
+        self.dataManager.on_path_update = _on_path_update
+
+        # refresh display panel to show new graph metadata
+        self.update("preset")
 
 
     def draw(self):
@@ -97,6 +130,7 @@ class MainScreen():
         displaySig=self.elements["display_panel"].checkConds(event)
         graphSig=self.elements["graph"].checkConds(event)
         if displaySig and len(displaySig)>0:
+            print(displaySig)
             self.update(displaySig)
         if graphSig and len(graphSig)>0:
             self.update(graphSig)

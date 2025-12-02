@@ -29,9 +29,27 @@ class CoordGenerator:
                 "N5": {}
             }
         graph=nx.Graph()
-        for key,val in self.data.items():
+        for key, val in self.data.items():
+            if not val:
+                continue
             for k, v in val.items():
-                graph.add_edge(key,k,weight=v)
+                if isinstance(v, (list, tuple)) and len(v) >= 2:
+                    t = 0 if v[0] is None else v[0]
+                    r = 0 if v[1] is None else v[1]
+                    try:
+                        scalar = float(t) + float(r)
+                    except Exception:
+                        scalar = 1.0
+                else:
+                    try:
+                        scalar = float(v)
+                    except Exception:
+                        scalar = 1.0
+
+                if scalar is None or scalar <= 0:
+                    scalar = 1.0
+
+                graph.add_edge(key, k, weight=scalar)
         forceatlas2=ForceAtlas2(
             outboundAttractionDistribution=True,
             barnesHutOptimize=True,
