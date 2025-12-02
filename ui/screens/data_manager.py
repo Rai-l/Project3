@@ -165,18 +165,36 @@ class DataManager:
         self.sync_adj_list()
 
         if self.mode.lower().startswith("dij"):
-            # run dijkstra on adjacency list
+            # run dijkstra on adjacency list using both weights. If signature changed, report and abort.
             try:
-                nodes, times, resources, weighted_distance, previous = self.adj.dijkstra(self.source, weight1, weight2)
+                result = self.adj.dijkstra(self.source, self.end, weight1, weight2)
+            except TypeError as e:
+                # adjacency list API changed; require teammate to update caller or adjust here
+                print("dijkstra error: incompatible dijkstra signature:", e)
+                self.path = {}
+                self.path_list = []
+                self.path_info = {}
+                result = None
+            except Exception as e:
+                print("dijkstra error:", e)
+                self.path = {}
+                self.path_list = []
+                self.path_info = {}
+                result = None
+
+            if not result:
+                # no path or unexpected return
+                self.path = {}
+                self.path_list = []
+                self.path_info = {}
+            elif isinstance(result, (list, tuple)) and len(result) == 5:
+                # old-style detailed return
+                nodes, times, resources, weighted_distance, previous = result
                 path = reconstruct_from_dijkstra(nodes, previous, self.source, self.end)
                 if path:
-                    # store simple path list for compatibility
                     self.path_list = path
-                    # build detailed info for each node in the path using arrays returned by dijkstra
                     self.path_info = {}
-                    # map nodes -> index
                     idx_map = {n: i for i, n in enumerate(nodes)}
-                    # construct dict mapping node -> cumulative [time,resource]
                     self.path = {}
                     for node_id in path:
                         i = idx_map.get(node_id)
@@ -187,15 +205,72 @@ class DataManager:
                             'resource': resources[i],
                             'cost': weighted_distance[i]
                         }
-                        # store cumulative pair in path dict
                         self.path[node_id] = [times[i], resources[i]]
                 else:
                     self.path = {}
                     self.path_list = []
                     self.path_info = {}
-            except Exception as e:
-                print("dijkstra error:", e)
+            elif isinstance(result, (list, tuple)):
+                # assume result is an ordered path list
+                path = list(result)
+                if path:
+                    self.path_list = path
+                    # reconstruct cumulative time/resource from UI data
+                    self.path = {}
+                    self.path_info = {}
+                    cum_t = 0
+                    cum_r = 0
+                    for idx, node_id in enumerate(path):
+                        if idx == 0:
+                            self.path[node_id] = [0, 0]
+                            self.path_info[node_id] = {'time': 0, 'resource': 0, 'cost': 0}
+                        else:
+                            prev = path[idx - 1]
+                            w = self.data.get(prev, {}).get(node_id, [0, 0])
+                            t = w[0] if (isinstance(w, (list, tuple)) and len(w) > 0 and w[0] is not None) else 0
+                            r = w[1] if (isinstance(w, (list, tuple)) and len(w) > 1 and w[1] is not None) else 0
+                            cum_t += t
+                            cum_r += r
+                            cost = cum_t * weight1 + cum_r * weight2
+                            self.path[node_id] = [cum_t, cum_r]
+                            self.path_info[node_id] = {'time': cum_t, 'resource': cum_r, 'cost': cost}
+                else:
+                    self.path = {}
+                    self.path_list = []
+                    self.path_info = {}
+            elif isinstance(result, dict):
+                # try common dict shapes
+                path = result.get('path') or result.get('nodes') or result.get('route')
+                if path:
+                    path = list(path)
+                    self.path_list = path
+                    # reconstruct similar to above
+                    self.path = {}
+                    self.path_info = {}
+                    cum_t = 0
+                    cum_r = 0
+                    for idx, node_id in enumerate(path):
+                        if idx == 0:
+                            self.path[node_id] = [0, 0]
+                            self.path_info[node_id] = {'time': 0, 'resource': 0, 'cost': 0}
+                        else:
+                            prev = path[idx - 1]
+                            w = self.data.get(prev, {}).get(node_id, [0, 0])
+                            t = w[0] if (isinstance(w, (list, tuple)) and len(w) > 0 and w[0] is not None) else 0
+                            r = w[1] if (isinstance(w, (list, tuple)) and len(w) > 1 and w[1] is not None) else 0
+                            cum_t += t
+                            cum_r += r
+                            cost = cum_t * weight1 + cum_r * weight2
+                            self.path[node_id] = [cum_t, cum_r]
+                            self.path_info[node_id] = {'time': cum_t, 'resource': cum_r, 'cost': cost}
+                else:
+                    self.path = {}
+                    self.path_list = []
+                    self.path_info = {}
+            else:
+                # unknown return type
                 self.path = {}
+                self.path_list = []
                 self.path_info = {}
         elif self.mode.lower() == "bfs":
              # compute BFS path and cumulative weights using provided scalarization

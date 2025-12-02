@@ -79,8 +79,14 @@ class AdjacencyList:
             return True
         return False
 
-    def dijkstra(self, nodeA, nodeB, weight1, weight2):
+    def dijkstra(self, nodeA, nodeB, weight1=1.0, weight2=1.0):
         q = pq.PriorityQueue()
+        # ensure priority queue uses the same scalarization
+        try:
+            q.weight1 = weight1
+            q.weight2 = weight2
+        except Exception:
+            pass
         nodes = list(self.graph.keys())
         time_taken = [sys.maxsize] * len(nodes)
         resources_needed = [sys.maxsize] * len(nodes)
@@ -95,26 +101,56 @@ class AdjacencyList:
             n = node[0]
             t = node[1]
             r = node[2]
-            index_n = nodes.index(n)
+            try:
+                index_n = nodes.index(n)
+            except ValueError:
+                # node not known in list
+                continue
+            # If the priority of this popped state is worse than the best known, skip
             if q.priority([n, t, r]) > weighted_distance[index_n]:
                 continue
-            adjacent_nodes = self.get_adjacent(n)
-            for i in range(0, len(adjacent_nodes)):
-                n1 = adjacent_nodes[i][0]
-                t1 = adjacent_nodes[i][1]
-                r1 = adjacent_nodes[i][2]
-                p1 = q.priority([n1, t1, r1])
-                index_n1 = nodes.index(n1)
+            adjacent_nodes = self.get_adjacent(n) or []
+            for entry in adjacent_nodes:
+                # entry format: [neighbor, time, resource]
+                if not entry or len(entry) < 1:
+                    continue
+                n1 = entry[0]
+                t1 = entry[1] if len(entry) > 1 else 0
+                r1 = entry[2] if len(entry) > 2 else 0
+                try:
+                    index_n1 = nodes.index(n1)
+                except ValueError:
+                    # unknown neighbor
+                    continue
+
+                # compute candidate cumulative totals
+                cand_time = time_taken[index_n] + (t1 if t1 is not None else 0)
+                cand_res = resources_needed[index_n] + (r1 if r1 is not None else 0)
+                # scalarize cumulative to compare
+                p1 = q.priority([n1, cand_time, cand_res])
+
                 if (weighted_distance[index_n] + p1) < weighted_distance[index_n1]:
                     weighted_distance[index_n1] = weighted_distance[index_n] + p1
-                    time_taken[index_n1] = time_taken[index_n] + t1
-                    resources_needed[index_n1] = resources_needed[index_n] + r1
+                    time_taken[index_n1] = cand_time
+                    resources_needed[index_n1] = cand_res
                     previous_node[index_n1] = n
                     q.insert([n1, time_taken[index_n1], resources_needed[index_n1]])
-        reverse_path = [nodeB]
-        index_path = nodes.index(nodeB)
-        while nodes[index_path] != nodeA:
-            reverse_path.append(previous_node[index_path])
-            index_path = nodes.index(previous_node[index_path])
-        path = list(reverse_path.reverse())
-        return path
+
+        # reconstruct path safely
+        if nodeB not in nodes or nodeA not in nodes:
+            return None
+        reverse_path = []
+        try:
+            index_path = nodes.index(nodeB)
+        except ValueError:
+            return None
+        cur = nodeB
+        while cur is not None:
+            reverse_path.append(cur)
+            prev = previous_node[nodes.index(cur)]
+            cur = prev
+        reverse_path.reverse()
+        # verify path starts with nodeA
+        if len(reverse_path) == 0 or reverse_path[0] != nodeA:
+            return None
+        return reverse_path
