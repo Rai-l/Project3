@@ -3,6 +3,15 @@ from .panel import Panel
 from .basic_templates import Ui, HBox, Button, VBox, InputBox
 
 class FilePanel(Ui):
+    '''
+    stores inputs from user with InputBox and submit through "submit" Button that helps signal input to higher level ui that is able to store signal
+
+    inherited from Ui
+    Attributes:
+        elements(dictionary): stores string keys with respective object
+        hbox(HBox): container for drawable objects for setting positions and drawing
+        rect(pygame.Rect): store a pygame.Rect object for collision references and visual
+    '''
     def __init__(self, screen, xpos, ypos, width, height):
         super().__init__("file_panel", width, height, xpos, ypos)
         self.elements = {}
@@ -42,6 +51,11 @@ class FilePanel(Ui):
     def getInput(self):
         return self.elements["input_box"].getInput()
     def checkConds(self, event):
+        '''
+        Returns event signal when collision with "submit" button is detected
+        :param event(pygame.event):
+        :return(string): return string if signal is triggered else None
+        '''
         self.elements["input_box"].checkConds(event)
         if self.rect.collidepoint(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]) and self.visibility:
             if event.type==pygame.MOUSEBUTTONDOWN:

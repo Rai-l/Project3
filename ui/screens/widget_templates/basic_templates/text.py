@@ -2,6 +2,20 @@ import pygame
 from .utility.file_manager import FileManager
 from .ui import Ui
 class Text(Ui):
+    '''
+    Creates a Text object used to store and draw text with certain modifiers.
+
+    Attributes:
+        size(int): size of text to be drawn
+        font(pygame.font): stores a pygame.font instance
+        fontName(string): name of font to be used in rendering text eg. "Arial"
+        wrap(string): store either "word" or "char" to indicate how to wrap
+        align(string): store either "center" or "top_left" to alter rendered text position in rect attribute
+        minSize(int): holds the min size a text can be resized to
+        wrapping(boolean): determine if full wrapping is needed; wrapping logic depends on wrap attribute
+        scrolling(boolean): auto sets wrap to char
+        text(string)
+    '''
     def __init__(self, screen, text, width, height, xpos=0, ypos=0, wrapping=False, scrolling=False, align="center", wrapType="word"):
         super().__init__("text", width,height, xpos, ypos)
         self.size = self.data["text"]["size"]["normal"]
@@ -20,9 +34,19 @@ class Text(Ui):
         self.wrapping=bool
 
     def setText(self, text):
+        '''
+        Sets a new text for rendering
+        :param text(string): new text to be used in font attribute
+        :return: None
+        '''
         self.text=self.getWrapped(text) if self.wrapping or self.scrolling else [text]
 
     def resize(self, size):
+        '''
+        Resizes a text as long as the new size is larger or equal to the minSize attribute
+        :param size(int): new size
+        :return: None
+        '''
         if size>=self.minSize:
             self.size=size
             self.font = pygame.font.SysFont(self.fontName, self.size, bold=True)
@@ -72,6 +96,12 @@ class Text(Ui):
         return newText
 
     def wrapChar(self, text, delim="\n"):
+        '''
+        wraps text by width of rect attribute, new line when char appended exceed width
+        :param text(string):
+        :param delim(string):
+        :return:
+        '''
         oldText = [text]
         line = ""
         newText = []
@@ -87,6 +117,12 @@ class Text(Ui):
         return newText
 
     def wrapWord(self, text,delim="\n"):
+        '''
+        wraps text by width of rect attribute, new line when word appended exceed width
+        :param text(string):
+        :param delim(string):
+        :return:
+        '''
         oldText = [text]
         line = ""
         newText = []

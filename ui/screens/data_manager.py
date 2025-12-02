@@ -1,7 +1,18 @@
 import os
 
 class DataManager:
+    '''Manages graph data, including loading, parsing, and path generation.
+    
+    Attributes:
+        data (dict): Adjacency list representing the graph.
+        num_nodes (int): Number of nodes in the graph.
+        source (str): The source node for pathfinding.
+        path (dict): Computed paths from the source node.   
+        mode (str): Pathfinding algorithm mode ("dijkastra" or "DFS").
+    '''
     def __init__(self):
+        '''Initializes the DataManager with default graph data.
+        '''
         self.data= {
             "N0": {"N1": 12, "N3": 5},
             "N1": {"N2": 3, "N4": 8},
@@ -16,6 +27,12 @@ class DataManager:
         self.mode="dijkastra"
 
     def getAdj(self, item):
+        '''Returns the adjacency list of the specified node as a string.
+        Parameters:
+            item (str): The node identifier.
+        Returns:
+            str: Stringified adjacency list of the node.
+        '''
         return self.stringifyNodes(self.data[item])
 
     def stringifyNodes(self, nodes):
@@ -63,7 +80,7 @@ class DataManager:
         pass
 
     def parseData(self, data=None):
-        #string data->adj list, expecting strings of from to weight
+        #string data->adj list, expecting strings of: from to weight
         print("parsing data...")
         try:
             strData = data

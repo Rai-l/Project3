@@ -8,8 +8,20 @@ from .widget_templates.text_panel import TextPanel
 import pygame
 
 class DisplayPanel():
+    '''A panel for displaying and managing graph data and user interactions.
+    
+    Attributes:
+        screen (pygame.Surface): The main display surface.
+        dim (tuple): Dimensions of the panel (width, height).
+        pos (tuple): Position of the panel (x, y).
+        panel (Panel): The main panel UI element.
+        elements (dict): Dictionary of UI elements within the panel.
+        inputType (str): Type of input selected ("file" or "text").
+        input (str): The actual input data provided by the user.
+        data (dict): Data to be displayed in the panel.'''
 
     def __init__(self, screen, screen_w, screen_h):
+        '''Initializes the DisplayPanel with UI elements and default data.'''
         self.screen=screen
         self.dim=(400, 300)
         self.pos=(10, screen_h-(self.dim[1]+10))
@@ -32,6 +44,7 @@ class DisplayPanel():
         pass
 
     def setUp(self):
+        '''Sets up the UI elements within the DisplayPanel.'''      
         elemDim=(self.dim[0]/8, self.dim[1]/10)
         hbox=HBox(self.pos[0], self.pos[1], self.dim[0], self.dim[1])
         button=Button(self.screen, elemDim[0] , elemDim[1]*(4/5), "Text")
@@ -112,6 +125,12 @@ class DisplayPanel():
 
 
     def buttonAction(self, name):
+        '''Handles button actions based on the button name clicked.
+        Parameters:
+            name (str): The name of the button clicked.
+        Returns:
+            str: A signal indicating the action taken, if applicable.'''
+
         if name=="text_input":
             #set text box visib to true
             if self.elements["textPanel"].getVisibility():
@@ -147,6 +166,11 @@ class DisplayPanel():
         pass
 
     def checkConds(self, event):
+        '''Checks conditions based on events and updates the panel state accordingly.
+        Parameters:
+            event (pygame.event.Event): The event to check.
+        Returns:
+            str: A signal indicating any action taken, if applicable.'''
         sig=None
         if self.rect.collidepoint(pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1]):
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -162,6 +186,10 @@ class DisplayPanel():
         return sig
 
     def setPos(self, xpos, ypos):
+        '''Sets the position of the DisplayPanel and its elements.
+        Parameters:
+            xpos (int): The x-coordinate of the new position.
+            ypos (int): The y-coordinate of the new position.'''
         self.pos=(xpos, ypos)
         self.rect = pygame.Rect(self.pos[0], self.pos[1], self.dim[0], self.dim[1])
         self.panel.setPos(xpos, ypos)

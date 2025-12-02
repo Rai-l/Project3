@@ -2,7 +2,25 @@ import pygame
 
 from .basic_templates import Button, Ui
 class Node(Ui):
+    '''A graphical representation of a node in a graph, with adjacency information and interactive capabilities.
+    
+    Attributes:
+        adj (dict): Adjacency list representing connected nodes and their weights.
+        maxR (int): Maximum radius for scaling the node.
+        id (str): Identifier for the node.
+        scaling (float): Scaling factor for the node's size.
+        selected (bool): Indicates if the node is currently selected.
+        highlight (bool): Indicates if the node is currently highlighted.
+        screen (pygame.Surface): The surface on which the node is drawn.'''
+
     def __init__(self, screen, id, adjVals, posCoord, radius):
+        '''Initializes the Node with its properties and interactive button.
+            Parameters:
+                screen (pygame.Surface): The surface on which the node is drawn.
+                id (str): Identifier for the node.
+                adjVals (dict): Adjacency list representing connected nodes and their weights.
+                posCoord (tuple): Position coordinates (x, y) of the node.
+                radius (int): Radius of the node.'''
         super().__init__("node", radius, radius, posCoord[0], posCoord[1])
         self.adj=adjVals
         self.maxR=radius
@@ -45,14 +63,21 @@ class Node(Ui):
         self.scaling=scaling
 
     def draw(self):
+        '''Draws the node on the screen with its current properties.''' 
         offset = ((self.pos[0]) * self.scaling, (self.pos[1]) * self.scaling)
         pygame.draw.circle(self.screen, self.colors["primary"], self.pos, self.dim[0])
         if (self.selected or self.highlight):
             border=self.colors["selected"] if self.selected else self.colors["highlight"]
             pygame.draw.circle(self.screen, border, self.pos, self.self.dim[0], 2)
-        self.button.draw();
+        self.button.draw()
 
     def drawOffset(self, xoff, yoff, width=0, height=0):
+        '''Draws the node with specified offsets and optional dimensions.
+            Parameters:
+                xoff (int): X-axis offset for drawing the node.
+                yoff (int): Y-axis offset for drawing the node.
+                width (int): Optional width for scaling the node.
+                height (int): Optional height for scaling the node.'''
         offset=(((self.pos[0]*self.scaling)+xoff+(width/2)), ((self.pos[1]*self.scaling)+yoff+(height/2)))
         if self.dim[0]>self.maxR:
             self.dim=(self.maxR, self.maxR)
