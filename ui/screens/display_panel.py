@@ -36,7 +36,7 @@ class DisplayPanel():
             "computed":"None",
             "computed_adj":"None",
             "computed_path":"None",
-            "curr_mode": "Dijkastra"
+            "curr_mode": "dijkstra"
         }
         self.rect = pygame.Rect(self.pos[0], self.pos[1], self.dim[0], self.dim[1])
         self.textSize=12
@@ -92,12 +92,12 @@ class DisplayPanel():
         hbox.setPadding(0, 0, 0.08)
         self.panel.insert("Computed Path:", hbox)
         hbox = HBox(self.pos[0], self.pos[1], self.dim[0], self.dim[1])
-        button = Button(self.screen, elemDim[0]+15, elemDim[1]*(4/5), "Dijkastra")
+        button = Button(self.screen, elemDim[0]+15, elemDim[1]*(4/5), "Dijkstra")
         hbox.insert(button)
-        self.elements["dijkastra_mode"] = button
-        button = Button(self.screen, elemDim[0], elemDim[1]*(4/5), "DFS")
+        self.elements["dijkstra_mode"] = button
+        button = Button(self.screen, elemDim[0], elemDim[1]*(4/5), "BFS")
         hbox.insert(button)
-        self.elements["DFS_mode"] = button
+        self.elements["BFS_mode"] = button
         hbox.setPadding(60)
         self.panel.insert("Mode:", hbox)
         filePanel = FilePanel(self.screen, self.pos[0], self.pos[1] - 40, self.dim[0], 30)
@@ -147,14 +147,14 @@ class DisplayPanel():
                 self.elements["filePanel"].setVisibility(True)
                 self.elements["textPanel"].setVisibility(False)
             pass
-        elif name == "dijkastra_mode":
+        elif name == "dijkstra_mode":
             #generate Dijk path and set to new data
-            if self.data["curr_mode"]!="dijkastra":
-                self.data["curr_mode"] = "dijkastra"
+            if self.data["curr_mode"]!="dijkstra":
+                self.data["curr_mode"] = "dijkstra"
                 return "mode"
-        elif name == "DFS_mode":
-            if self.data["curr_mode"] != "DFS":
-                self.data["curr_mode"] = "DFS"
+        elif name == "BFS_mode":
+            if self.data["curr_mode"] != "BFS":
+                self.data["curr_mode"] = "BFS"
                 return "mode"
         pass
 

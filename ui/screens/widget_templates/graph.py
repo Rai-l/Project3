@@ -71,7 +71,7 @@ class Graph(Ui):
         self.graphDimensions=self.coordGenerator.getDimensions()
         self.currPos=(0,0)
         self.rect=pygame.Rect(self.pos[0], self.pos[1], self.dim[0], self.dim[1])
-        self.mode="dijkastra"
+        self.mode="dijkstra"
         self.highlighted={}
         self.nodes={}
         self.idx=index.Index()
@@ -134,7 +134,7 @@ class Graph(Ui):
             temp.append(self.nodes[n])
         self.inRange=temp
     def toggleMode(self):
-        self.mode="DFS"if self.mode=="dijkastra" else "dijkastra"
+        self.mode="BFS"if self.mode=="dijkstra" else "dijkstra"
 
     def highlightPath(self, nodes):
         '''

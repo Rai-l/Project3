@@ -8,7 +8,7 @@ class DataManager:
         num_nodes (int): Number of nodes in the graph.
         source (str): The source node for pathfinding.
         path (dict): Computed paths from the source node.   
-        mode (str): Pathfinding algorithm mode ("dijkastra" or "DFS").
+        mode (str): Pathfinding algorithm mode ("dijkstra" or "BFS").
     '''
     def __init__(self):
         '''Initializes the DataManager with default graph data.
@@ -24,7 +24,7 @@ class DataManager:
         self.num_nodes=len(self.data)
         self.source=None
         self.path={}
-        self.mode="dijkastra"
+        self.mode="dijkstra"
 
     def getAdj(self, item):
         '''Returns the adjacency list of the specified node as a string.
@@ -60,9 +60,9 @@ class DataManager:
 
     def generatePath(self):
         if self.source:
-            if self.mode == "dijkastra":
+            if self.mode == "dijkstra":
                 pass
-            elif self.mode == "DFS":
+            elif self.mode == "BFS":
                 pass
 
     def getPath(self):
