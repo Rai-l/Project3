@@ -19,7 +19,8 @@ def init_menu():
 
         try:
             ur_select = int(input("Choose an option: "))
-        except:
+        except ValueError:
+            print("Invalid input! Enter 1–6.")
             continue
 
         if ur_select == 1:
@@ -68,11 +69,11 @@ def setData():
         elif inputType == "file":
             currInput=input("Please enter filepath: ")
             dataManager.loadData(currInput, inputType)
-        elif inputType == "file":
-            edges=input("Please enter number of edges: ")
+        elif inputType == "text":
+            edges=int(input("Please enter number of edges: "))
             text=""
             for i in range(edges):
-                text += input("Please input an edge (format: N1 N2 0 1): ")
+                text += input("Please input an edge (format: N1 N2 0 1): ")+"\n"
             dataManager.loadData(text, inputType)
     else:
         print("Invalid type")

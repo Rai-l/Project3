@@ -44,6 +44,7 @@ class DataManager:
 
     def setMode(self, mode):
         self.mode = mode
+        self.path = []
         self.generatePath()
 
     def setSource(self, node):
