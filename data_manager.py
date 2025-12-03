@@ -6,6 +6,19 @@ from backend.Algorithims.adapters import adjlist_to_bfs, reconstruct_from_dijkst
 
 
 class DataManager:
+    '''
+    Helps manage modifying, retrieving, and storing data of an adjacency list and other included attributes.
+
+    Attributes:
+        data(dict): dict of node keys and their adjacent vetex as values where its stored as dict of node key and weight, a list of time and resource
+        adj(AdjacencyList): an instance of AdjacencyList
+        num_nodes(int): length of current data dict
+        source(string): start node for computation of shortest path
+        end(string): end node for computation of shortest path
+        path(list): computed shortest path
+        mode(string): string of "dijkstra" or "bfs"
+
+    '''
     def __init__(self):
         self.data = {
             "N0": {"N1": [12, 1], "N3": [5, 2]},
@@ -49,15 +62,9 @@ class DataManager:
 
     def setSource(self, node):
         self.source = node
-        if self.end:
-            self.generatePath()
-        else:
-            self.path = []
-        pass
 
     def setEnd(self, node):
         self.end = node
-        self.generatePath()
 
     def runBFS(self):
         try:
